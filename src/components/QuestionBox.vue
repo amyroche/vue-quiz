@@ -11,11 +11,18 @@
         v-for="(answer, index) in answers" 
         :key="index"
         @click="selectAnswer(index)"
-        :class="[selectedIndex === index ? 'selected' : '']">{{ answer }}</b-list-group-item>
+        :class="[
+          !answered && selectedIndex === index ? 'selected' : 
+          answered && correctIndex === index ? 'correct' : 
+          answered && selectedIndex === index && correctIndex != index ? 'incorrect' : ''
+          ]">{{ answer }}</b-list-group-item>
       </b-list-group>
 
-      <b-button variant="primary" href="#">Submit</b-button>
-      <b-button @click="nextQuestion" variant="success" href="#">Next</b-button>
+      <b-button variant="primary"
+        @click="submitAnswer"
+        :disabled="selectedIndex === null || answered">Submit</b-button>
+
+      <b-button @click="nextQuestion" variant="success">Next</b-button>
     </b-jumbotron>
   </div>
 </template>
@@ -26,12 +33,15 @@ import _ from 'lodash'
   export default {
     props: {
       currentQuestion: Object,
-      nextQuestion: Function
+      nextQuestion: Function,
+      increment: Function
     },
     data() {
       return {
         selectedIndex: null,
-        shuffledAnswers: []
+        correctIndex: null,
+        shuffledAnswers: [],
+        answered: false
       }
     },
     computed: {
@@ -42,19 +52,36 @@ import _ from 'lodash'
       }
     },
     watch: {
-      currentQuestion() {
-        this.selectedIndex = null
-        this.shuffleAnswers()
+      currentQuestion: {
+        immediate: true,
+        handler() {
+          this.selectedIndex = null
+          this.answered = false
+          this.shuffleAnswers()
+        }
       }
+      // () {
+      //   this.selectedIndex = null
+      //   this.shuffleAnswers()
+      // }
     },
     methods: {
       selectAnswer(index) {
         this.selectedIndex = index
-        console.log(index)
       },
       shuffleAnswers() {
         let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer]
+       // console.log(answers)
         this.shuffledAnswers = _.shuffle(answers)
+        this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer)
+      },
+      submitAnswer() {
+        let isCorrect = false
+        if(this.selectedIndex === this.correctIndex) {
+          isCorrect = true
+        }
+        this.answered = true
+        this.increment(isCorrect)
       }
     }
   };
