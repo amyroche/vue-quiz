@@ -7,7 +7,7 @@
       <b-row sm="6">
         <b-col><QuestionBox 
           v-if="questions.length && questions.length <= 10"
-          :currentQuestion='questions[index]''
+          :currentQuestion="questions[index]"
           :nextQuestion="nextQuestion"
           :increment="increment" /></b-col>
       </b-row>
@@ -50,6 +50,7 @@
         }).then((response) => {
           return response.json()
         }).then((jsonData) => {
+          //JSON.stringify(jsonData.results)
           this.questions = jsonData.results
         })
       }
