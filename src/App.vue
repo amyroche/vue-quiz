@@ -6,8 +6,8 @@
     <b-container class="bv-example-row">
       <b-row sm="6">
         <b-col><QuestionBox 
-          v-if="questions.length"
-          :currentQuestion="questions[index]"
+          v-if="questions.length && questions.length <= 10"
+          :currentQuestion='questions[index]''
           :nextQuestion="nextQuestion"
           :increment="increment" /></b-col>
       </b-row>

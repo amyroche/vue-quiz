@@ -18,7 +18,9 @@
         @click="submitAnswer"
         :disabled="selectedIndex === null || answered">Submit</b-button>
 
-      <b-button @click="nextQuestion" variant="success">Next</b-button>
+      <b-button 
+      v-if="completed < 10"
+      @click="nextQuestion" variant="success">Next</b-button>
     </b-jumbotron>
   </div>
 </template>
@@ -37,7 +39,8 @@ import _ from 'lodash'
         selectedIndex: null,
         correctIndex: null,
         shuffledAnswers: [],
-        answered: false
+        answered: false,
+        completed: 0
       }
     },
     computed: {
@@ -78,6 +81,7 @@ import _ from 'lodash'
         }
         this.answered = true
         this.increment(isCorrect)
+        this.completed++
       },
       answerClass(index) {
         var answerClass = ''
